@@ -1,4 +1,3 @@
-// http://ec2-54-86-95-204.compute-1.amazonaws.com:3456/index.html
 class Chatroom {
   constructor(room_name, room_id, password, owner) {
     this.room_name = room_name;
@@ -43,11 +42,7 @@ const file = "index.html";
 // Listen for HTTP connections.  This is essentially a miniature static file server that only serves our one file, client.html, on port 3456:
 const server = http.createServer(function (req, resp) {
   // This callback runs when a new connection is made to our HTTP server.
-  let filename = path.join(
-    __dirname,
-    "",
-    url.parse(req.url).pathname
-  );
+  let filename = path.join(__dirname, "", url.parse(req.url).pathname);
   (fs.exists || path.exists)(filename, function (exists) {
     if (exists) {
       fs.readFile(filename, function (err, data) {

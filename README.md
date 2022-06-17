@@ -1,31 +1,15 @@
-# CSE330
+# ChatIt Chat server
 
-### Ethan Meitz
+Create and host chat rooms allowing multiple devices to join and chat with real time synchronized communication and host functionality.
 
-- Id: 455321
-- Github: ejmeitz
-
-### Vinay Viswanathan
-
-- Id: 486208
-- Github: vinayvis821
-
-## About the site
-
-- General note: You are not allowed to use a username that is currently in use by someone on the site. The same goes applies to chatroom names.
-- If you wish to log out, hit refresh or exit out of the page.
-
-## Creative Portion:
-
-For our creative portion we allow users to also select a profile picture with their username. This option is presented at the login page and displays next to the user's name while chatting. If the user does not select a profile picture, one is chosen by default for them.
-
-We also allow users to react to chat messages. To react to a message simply click on the chat you want to reach to. A modal window will appear prompting you to select a reaction. Once you choose a reaction your reaction will be added to other user's reactions below the message.
-
-Lastly, we allow creators of the room to make other users in the room be a host. The user has to be a valid user and must currently be in the room to receive host.
+Tech stack:
+Node.JS for server/backend
+Javascript/HTML/CSS for front end
+socket.io for synchronous communication across devices
 
 ## Using the Site:
 
-First install the node packages from the package.json and run the start server on port 3456. In the URL request index.html e.g.. https://amazonaws.ip-address:3456/index.html
+First install the node packages from the package.json and run the start server on port 3456. In the URL request index.html e.g.. localhost:3456/index.html
 
 The initial page should give you a form to put a username and offer a selection of avatars. Click the login button to enable chat functionality. You will be presented with three columns.
 
