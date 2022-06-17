@@ -1,0 +1,278 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,200&display=swap");
+
+* {
+  /* border: 1px solid red; */
+  font-family: "Roboto Mono", monospace;
+}
+
+/* header styles */
+.header-container {
+  width: 100%;
+  background-color: black;
+  height: 70px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #5f99cf;
+}
+
+.header-text {
+  width: 70%;
+  margin: auto;
+}
+
+.header {
+  color: white;
+  padding-top: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/*  Chat container styles */
+
+.chat-container {
+  display: none;
+}
+
+.login-window-container {
+  position: relative;
+}
+
+.login-to-chat {
+  text-align: center;
+}
+
+.login-window {
+  position: absolute;
+  top: 200px;
+  left: 40%;
+}
+
+.site-container {
+  border: 1px solid black;
+  box-sizing: border-box;
+  border-radius: 20px;
+  width: 90vw;
+  height: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container {
+  float: left;
+}
+
+.profile-pictures img {
+  width: 70px;
+  height: 60px;
+  cursor: pointer;
+  padding: 2px;
+  margin-right: 5px;
+}
+
+.profile-pictures img:hover {
+  border: 1px solid black !important;
+}
+
+/*chat window styles */
+
+.open-chatrooms-container,
+.chatroom-container {
+  border-right: 1px solid black;
+}
+
+.open-chatrooms-container,
+.chatroom-container,
+.list-users-container {
+  height: 600px;
+  overflow-x: hidden;
+}
+
+/* CITE: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_hide_scrollbar_keep_func */
+
+.open-chatrooms-container {
+  overflow-y: scroll;
+}
+
+.chatroom-title-parent {
+  position: sticky;
+  top: 0px;
+  background-color: white;
+  z-index: 1;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.chatroom-container {
+  position: relative;
+}
+
+.chats {
+  overflow-y: scroll;
+  overflow-wrap: normal;
+}
+
+.chats::-webkit-scrollbar,
+.open-chatrooms-container::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-input-field {
+  padding-bottom: 10px;
+  /* margin-bottom: 10px; */
+  display: none;
+  position: sticky;
+  bottom: 0px;
+  /* background-color: white; */
+  /* border: 1px solid black; */
+  z-index: 1;
+}
+
+#leave-room {
+  display: none;
+  margin-bottom: 5px;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.bold-text {
+  font-weight: bold;
+  margin-bottom: none;
+  padding-bottom: none;
+}
+
+.chat-message {
+  display: inline-block;
+  margin-top: 0;
+  padding: 4px 5px 5px 5px;
+  margin-bottom: 3px;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: #1982fc;
+  color: white;
+}
+
+.chat-message:hover {
+  cursor: pointer;
+}
+
+#active-user-list {
+  padding-left: 0;
+}
+
+#active-user-list li {
+  list-style-type: none;
+  padding-left: 3px;
+  margin-left: 0;
+}
+
+.private {
+  color: red;
+  display: inline-block;
+  margin-bottom: 3px;
+}
+
+.private-name {
+  padding: 5px;
+}
+
+.private-name:hover {
+  background-color: #03a9f4;
+  cursor: pointer;
+}
+
+.chat-message-create {
+  margin-bottom: 5px;
+}
+
+.chat-message-image {
+  float: left;
+}
+
+#chats img {
+  width: 24px;
+  height: 24px;
+}
+
+/* Create chat room styles */
+
+#create-chatroom-inputs {
+  display: none;
+}
+
+#room-name,
+#room-password {
+  margin-bottom: 5px;
+}
+
+.chatroom-in-list {
+  font-weight: bold;
+  margin-bottom: 5px;
+  background-color: white;
+  padding: 5px;
+}
+
+.chatroom-in-list:hover {
+  background-color: #03a9f4;
+  cursor: pointer;
+}
+
+/* Reactions */
+
+#reactions-parent {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: white;
+  width: 40vw;
+  margin-left: -20vw;
+  border: 2px solid black;
+  border-radius: 5px;
+  z-index: 10;
+}
+.reactions-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.reaction-option {
+  width: 40px;
+  height: 40px;
+}
+
+.reaction-option:hover {
+  cursor: pointer;
+  background-color: lightgray;
+}
+
+.cancel-reaction {
+  margin-left: 15px;
+}
+
+/* Host box */
+
+#chatroom-container {
+  position: relative;
+}
+
+#host-box {
+  display: none;
+  background-color: white;
+  text-align: center;
+  width: 300px;
+  border: 1px solid black;
+  border-radius: 10px;
+  left: 15%;
+  height: 300px;
+  position: absolute;
+  z-index: 2;
+}

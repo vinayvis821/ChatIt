@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="./resources/chat.png" />
+
+    <!-- Import Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+
+    <!-- Import Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Import Socket IO -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      let socketio = io.connect();
+    </script>
+    <script src="create-join-room.js"></script>
+    <script src="chat.js"></script>
+
+    <title>Chat Server</title>
+  </head>
+  <body>
+    <div class="header-container">
+      <div class="header-text">
+        <h1 class="header">ChatIt!</h1>
+      </div>
+    </div>
+
+    <!-- Login window that appears on page login -->
+    <div class="site-container">
+      <div id="login-container" class="login-window-container container">
+        <h2 class="login-to-chat">Enter a username to chat!</h2>
+        <div class="row">
+          <div class="col-sm login-window">
+            <input
+              type="text"
+              id="login-username"
+              placeholder="Enter a username"
+              required
+            />
+            <button type="submit" class="btn btn-primary" id="login-button">
+              Submit
+            </button>
+            <div class="profile-pictures row">
+              <!-- Pictures from: https://github.blog/2013-08-14-identicons/ -->
+              <div class="row">
+                <img
+                  class="avatar-preview"
+                  id="avatar1"
+                  src="/resources/avatars/avatar1.png"
+                  alt="Avatar1"
+                />
+                <img
+                  class="avatar-preview"
+                  id="avatar2"
+                  src="/resources/avatars/avatar2.png"
+                  alt="Avatar2"
+                />
+                <img
+                  class="avatar-preview"
+                  id="avatar3"
+                  src="/resources/avatars/avatar3.png"
+                  alt="Avatar3"
+                />
+              </div>
+              <div class="row">
+                <img
+                  class="avatar-preview"
+                  id="avatar4"
+                  src="/resources/avatars/avatar4.png"
+                  alt="Avatar4"
+                />
+                <img
+                  class="avatar-preview"
+                  id="avatar5"
+                  src="/resources/avatars/avatar5.png"
+                  alt="Avatar5"
+                />
+                <img
+                  class="avatar-preview"
+                  id="avatar6"
+                  src="/resources/avatars/avatar6.png"
+                  alt="Avatar6"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="chat-container" class="chat-container container">
+        <div class="row">
+          <!-- Left column that shows active chatrooms -->
+          <div class="open-chatrooms-container col-3">
+            <div class="open-chatrooms">
+              <h3 id="active-chatroom-status">Open Chatrooms:</h3>
+              <div id="open-chatrooms-list-parent">
+                <div id="open-chatrooms-list"></div>
+              </div>
+              <button
+                type="submit"
+                id="new-chatroom-btn"
+                class="new-chat-btn btn btn-primary"
+              >
+                Create New Chatroom
+              </button>
+              <div class="create-chatroom-inputs" id="create-chatroom-inputs">
+                <div class="create-chatroom-inputs-boxes">
+                  <input type="text" placeholder="Room Name" id="room-name" />
+                  <br />
+                  <input
+                    type="password"
+                    placeholder="Room Password"
+                    id="room-password"
+                  />
+                  <br />
+                  <button
+                    type="submit"
+                    id="create-chatroom-btn"
+                    class="btn btn-primary"
+                  >
+                    Create Room
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <script>
+            socketio.on("active_chatrooms", function (data) {
+              chatrooms = data["chatrooms"];
+              if (chatrooms.length > 0) {
+                document.getElementById("active-chatroom-status").innerHTML =
+                  "Active Chatrooms:";
+                let chatroom_list = document.getElementById(
+                  "open-chatrooms-list"
+                );
+                for (let i = 0; i < chatrooms.length; ++i) {
+                  let new_room = document.createElement("p");
+                  name = chatrooms[i].room_name;
+                  console.log(chatrooms[i]);
+                  if (chatrooms[i].password != "") {
+                    new_room.innerHTML = chatrooms[i].room_name + "*";
+                  } else {
+                    new_room.innerHTML = chatrooms[i].room_name;
+                  }
+                  new_room.setAttribute("class", "chatroom-in-list");
+                  new_room.setAttribute("id", chatrooms[i].id);
+                  chatroom_list.appendChild(new_room);
+                  new_room.addEventListener("click", joinChatRoom, false);
+                }
+              } else {
+                document.getElementById("active-chatroom-status").innerHTML =
+                  "No Active Chatrooms";
+              }
+            });
+          </script>
+
+          <!-- Middle column that shows chatroom text-->
+          <div class="chatroom-container col-6">
+            <div class="chatroom-title-parent">
+              <h3 class="chatroom-title" id="chatroom-title">
+                Join a chatroom to chat!
+              </h3>
+              <button class="btn btn-primary" id="leave-room" type="submit">
+                Leave Room
+              </button>
+            </div>
+            <div id="host-box">
+              <h3 id="host-user-title">User:</h3>
+              <div class="row">
+                <div class="col-sm">
+                  <button id="kick-button" class="btn btn-primary">Kick</button>
+                </div>
+                <div class="col-sm">
+                  <button id="ban-button" class="btn btn-danger">Ban</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm">
+                  <button id="back-button" class="btn btn-secondary">
+                    Back
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="chats" class="chats"></div>
+            <br />
+            <div class="chat-input-field" id="chat-input-field">
+              <input
+                type="text"
+                class="chat-field"
+                id="chat-message-to-send"
+                placeholder="Your Message"
+              />
+              <button
+                id="send-chat-message"
+                class="submit-chat btn btn-primary"
+                type="submit"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+
+          <!-- Right column of users currently in chatroom -->
+          <div class="list-users-container col-3">
+            <div class="list-users">
+              <h3>Active Users:</h3>
+              <div id="list-user-ul-here">
+                <ul id="active-user-list" class="active-user-list"></ul>
+              </div>
+            </div>
+          </div>
+          <script>
+            socketio.on("login_response", function (data) {
+              if (data["success"]) {
+                //Append new user to list
+                let user_list = document.getElementById("active-user-list");
+                let new_li = document.createElement("li");
+                new_li.id = data["username"];
+                new_li.innerHTML = data["username"];
+                user_list.appendChild(new_li);
+              } else {
+                alert("Username currently in use. Please choose another name.");
+              }
+            });
+            socketio.on("toggle_display", function (data) {
+              document.getElementById("login-container").style.display = "none";
+              document.getElementById("chat-container").style.display = "block";
+            });
+            //create initial list
+            socketio.on("active_users", function (data) {
+              let list = data["users"];
+              console.log("list: " + list);
+              if (list.length > 0) {
+                let user_list = document.getElementById("active-user-list");
+                for (let i = 0; i < list.length; ++i) {
+                  let new_li = document.createElement("li");
+                  new_li.id = list[i];
+                  new_li.innerHTML = list[i];
+                  user_list.appendChild(new_li);
+                }
+              }
+            });
+
+            //remove user from list
+            socketio.on("user_disconnect", function (data) {
+              //Delete old list
+              document.getElementById("active-user-list").remove();
+              //Create new list
+              let new_ul = document.createElement("ul");
+              new_ul.setAttribute("id", "active-user-list");
+
+              let unames = data["usernames"];
+              let len = unames.length;
+              if (len > 0) {
+                for (let i = 0; i < len; ++i) {
+                  let new_li = document.createElement("li");
+                  new_li.id = unames[i];
+                  new_li.innerHTML = unames[i];
+                  new_ul.appendChild(new_li);
+                }
+              }
+              document.getElementById("list-user-ul-here").appendChild(new_ul);
+
+              let chatroom_list = document.getElementById(
+                "open-chatrooms-list"
+              );
+              while (chatroom_list.firstChild) {
+                chatroom_list.removeChild(chatroom_list.firstChild);
+              }
+              // document.getElementById("chatroom-title").innerHTML =
+              //   "Join a chatroom to chat!";
+              // document.getElementById("leave-room").style.display = "none";
+              // document.getElementById("chat-input-field").style.display =
+              //   "none";
+              // let chats = document.getElementById("chats");
+              // while (chats.firstChild) {
+              //   chats.removeChild(chats.firstChild);
+              // }
+              //update chatroom list
+              chatrooms = data["chatrooms"];
+              if (chatrooms.length > 0) {
+                document.getElementById("active-chatroom-status").innerHTML =
+                  "Active Chatrooms:";
+                let chatroom_list = document.getElementById(
+                  "open-chatrooms-list"
+                );
+                for (let i = 0; i < chatrooms.length; ++i) {
+                  let new_room = document.createElement("p");
+                  name = chatrooms[i].room_name;
+                  console.log(chatrooms[i]);
+                  if (chatrooms[i].password != "") {
+                    new_room.innerHTML = chatrooms[i].room_name + "*";
+                  } else {
+                    new_room.innerHTML = chatrooms[i].room_name;
+                  }
+                  new_room.setAttribute("class", "chatroom-in-list");
+                  new_room.setAttribute("id", chatrooms[i].id);
+                  chatroom_list.appendChild(new_room);
+                  new_room.addEventListener("click", joinChatRoom, false);
+                }
+              } else {
+                document.getElementById("active-chatroom-status").innerHTML =
+                  "No Active Chatrooms";
+              }
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+
+    <!-- <script src="create-join-room.js"></script>
+    <script src="chat.js"></script> -->
+
+    <!-- Event Listeners -->
+    <script>
+      avatar_previews = document.getElementsByClassName("avatar-preview");
+      //by default select avatar1
+      active_avatar_id = "avatar1";
+      document.getElementById(active_avatar_id).style.border =
+        "1px solid black";
+      //loop through all avatars and add event listeners
+      for (let i = 0; i < avatar_previews.length; ++i) {
+        avatar_previews[i].addEventListener(
+          "click",
+          (e) => {
+            document.getElementById(active_avatar_id).style.border = "none";
+            avatar_id = e.currentTarget.id;
+            e.currentTarget.style.border = "1px solid black";
+            active_avatar_id = avatar_id;
+          },
+          false
+        );
+      }
+
+      document.getElementById("login-button").addEventListener(
+        "click",
+        (e) => {
+          let uname = document.getElementById("login-username").value;
+          socketio.emit("login_info_to_server", {
+            username: uname,
+            avatar: active_avatar_id,
+          });
+        },
+        false
+      );
+
+      document
+        .getElementById("new-chatroom-btn")
+        .addEventListener("click", displayCreateRoom, false);
+
+      document
+        .getElementById("create-chatroom-btn")
+        .addEventListener("click", createNewRoom, false);
+
+      document
+        .getElementById("leave-room")
+        .addEventListener("click", leaveChatRoom, false);
+
+      document
+        .getElementById("send-chat-message")
+        .addEventListener("click", sendChatToRoom, false);
+
+      document
+        .getElementById("kick-button")
+        .addEventListener("click", kickUser);
+
+      document.getElementById("ban-button").addEventListener("click", banUser);
+
+      document
+        .getElementById("back-button")
+        .addEventListener("click", closeHostBox);
+    </script>
+
+    <div id="reactions-parent">
+      <h3>Choose a Reaction:</h3>
+      <div id="reactions-container" class="reactions-container">
+        <img
+          class="reaction-option"
+          src="/resources/reactions/reaction0.png"
+          alt="heart"
+        />
+        <img
+          class="reaction-option"
+          src="/resources/reactions/reaction1.png"
+          alt="like-button"
+        />
+        <img
+          class="reaction-option"
+          src="/resources/reactions/reaction2.png"
+          alt="reaction"
+        />
+        <img
+          class="reaction-option"
+          src="/resources/reactions/reaction3.png"
+          alt="reaction"
+        />
+        <img
+          class="cancel-reaction reaction-option"
+          src="/resources/reactions/cancel.png"
+          alt="reaction"
+        />
+        <label>Cancel</label>
+
+        <script>
+          init_reactions();
+        </script>
+      </div>
+    </div>
+  </body>
+</html>
